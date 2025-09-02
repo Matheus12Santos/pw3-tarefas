@@ -4,10 +4,9 @@ import br.com.etechas.tarefas.dto.TarefaResponseDTO;
 import br.com.etechas.tarefas.entity.Tarefa;
 import br.com.etechas.tarefas.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +20,19 @@ public class TarefaController {
     @GetMapping
     public List<TarefaResponseDTO> listar(){
         return service.findAll();
+    }
+
+    /*@DeleteMapping("/{id}")
+    public ResponseEntity<TarefaResponseDTO> deletarTarefa(Long id){
+        service.excluirPorId(id);
+        return ResponseEntity.noContent().build();
+    }*/
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        if(service.deleteById(id)){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
