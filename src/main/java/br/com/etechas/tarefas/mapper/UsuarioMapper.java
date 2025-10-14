@@ -1,18 +1,16 @@
 package br.com.etechas.tarefas.mapper;
 
+import br.com.etechas.tarefas.dto.UsuarioCadastradoDTO;
 import br.com.etechas.tarefas.dto.UsuarioResponseDTO;
 import br.com.etechas.tarefas.entity.Usuario;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-public class UsuarioMapper {
-    public static <UsuarioCadastroDTO> Usuario toEntity(UsuarioCadastroDTO cadastro) {
-        Usuario usuario = new Usuario();
-        usuario.setUsername(cadastro.username());
-        usuario.setPassword(cadastro.password()); // Idealmente, você deveria criptografar aqui
-        usuario.setRole(cadastro.role());
-        return usuario;
-    }
+@Mapper(componentModel = "spring")
+public interface UsuarioMapper {
+    UsuarioMapper INSTANCE = Mappers.getMapper(UsuarioMapper.class);
 
-    public static UsuarioResponseDTO toUsuarioResponseDTO(Usuario usuario) {
-        return new UsuarioResponseDTO(usuario.getId(), usuario.getUsername(), usuario.getRole());
-    }
+    Usuario toEntity(UsuarioCadastradoDTO cadastro);
+
+    UsuarioResponseDTO toUsuarioResponseDTO(Usuario usuario);
 }
