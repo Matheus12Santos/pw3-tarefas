@@ -26,7 +26,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> autenticar(@RequestBody LoginRequestDTO loginRequestDTO){
-        var autenticado = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.usuario(), loginRequestDTO.senha()));
+        var autenticado = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.username(), loginRequestDTO.password()));
 
         final String token = jwtHolder.generateToken((UserDetails) autenticado.getPrincipal());
         return ResponseEntity.ok(new LoginResponseDTO(token));

@@ -1,8 +1,10 @@
 package br.com.etechas.tarefas.security;
 
-import org.springframework.beans.factory.annotation.Configurable;
+import jakarta.servlet.Filter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,13 +19,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private Filter jwtAuthFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.cors(Customizer.withDefaults());
-            http.csrf(AbstractHttpConfigurer::disable);
-            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-            http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-            return http.build();
+        http.cors(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/login").permitAll().requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                .anyRequest().authenticated());
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        return http.build();
     }
 
     @Bean
